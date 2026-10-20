@@ -1,0 +1,23 @@
+{
+  "prisma.pinToPrisma6": true,
+  "CodeGPT.apiKey": "LM Studio",
+  "CodeGPT.Autocomplete.enabled": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.inlineSuggest.suppressSuggestions": false,
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "on",
+    "strings": "on"
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.wordBasedSuggestions": "allDocuments",
+  "editor.tabCompletion": "on",
+  "editor.parameterHints.enabled": true,
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": true,
+    "markdown": true,
+    "typescript": true
+  },
+  "github.copilot.inlineSuggest.enable": true
+}

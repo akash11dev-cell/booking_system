@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AppointmentStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  CONFIRMED
+}
+
+model Appointment {
+  id            String @id @default(cuid())
+  businessId    String
+  serviceId     String
+  customerName  String
+  customerPhone String
+
+  startAt                DateTime
+  endAt                  DateTime
+  status                 AppointmentStatus
+  serviceName            String
+  serviceDurationMinutes Int
+  priceAtBooking         Float
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  business               Business          @relation(fields: [businessId], references: [id])
+  service                Services          @relation(fields: [serviceId], references: [id])
+
+  @@index([businessId, startAt])
+  @@index([serviceId, startAt])
+}
+
+model BusinessWorkingHours {
+  id String @id @default(cuid())
+  dayOfWeek Int
+  openTime String?
+  closeTime String?
+  businessId String
+  business Business @relation(fields: [businessId],references: [id],onDelete: Cascade)
+  isClosed Boolean @default(false)
+
+  @@unique([businessId,dayOfWeek])
+  @@index([businessId])
+}
+
+model Business {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  Services     Services[]
+  appointments Appointment[]
+  workingHours BusinessWorkingHours[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Services {
+  id           String        @id @default(cuid())
+  name         String
+  duration     Int
+  description  String?
+  price        Float
+  business     Business      @relation(fields: [businessId], references: [id])
+  businessId   String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]
+
+  @@index([businessId])
+}
+
+enum BusinessRole {
+  OWNER
+  USER
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  businessRole BusinessRole?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
